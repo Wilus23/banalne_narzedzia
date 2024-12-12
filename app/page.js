@@ -11,7 +11,8 @@ export default function Home() {
 
   useEffect(() => {
     // Matrix Code Rain
-    const characters = 'アィゥェォカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワンヰヱヲ∀∑∫π∞√∆∇∂∈∉∪∩⊂⊆⊕⊗∴∵≈≠≡≤≥⇒⇔';
+    // アィゥェォカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワンヰヱヲ∀∑∫π∞√∆∇∂∈∉∪∩⊂⊆⊕⊗∴∵≈≠≡≤≥⇒⇔
+    const characters = 'π∇⊗θ[⌊∞⊥⌉∩⊻⊆µσ→{}≠≈⌈⊤↔∫∈ψ∉∂]⊕α∆⌋∨χ0123456789λ∑→≠÷β±ρ∞→∏⇔∞δεζ⌊∞γ→τυ∨×÷{}[()]';
     const charArray = characters.split('');
 
     const canvas = canvasRef.current;
