@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export default function Home() {
   const canvasRef = useRef(null);
@@ -9,9 +9,10 @@ export default function Home() {
   const converterFormRef = useRef(null);
   const currencyFormRef = useRef(null);
 
+  const [activeSection, setActiveSection] = useState(null);
+
   useEffect(() => {
     // Matrix Code Rain
-    // アィゥェォカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワンヰヱヲ∀∑∫π∞√∆∇∂∈∉∪∩⊂⊆⊕⊗∴∵≈≠≡≤≥⇒⇔
     const characters = 'π∇⊗θ[⌊∞⊥⌉∩⊻⊆µσ→{}≠≈⌈⊤↔∫∈ψ∉∂]⊕α∆⌋∨χ0123456789λ∑→≠÷β±ρ∞→∏⇔∞δεζ⌊∞γ→τυ∨×÷{}[()]';
     const charArray = characters.split('');
 
@@ -19,7 +20,7 @@ export default function Home() {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
 
-    const fontSize = 20; // Definiujemy fontSize przed użyciem
+    const fontSize = 20; 
     let columns = Math.floor(window.innerWidth / fontSize);
     const drops = [];
     for (let i = 0; i < columns; i++) {
@@ -59,7 +60,7 @@ export default function Home() {
 
     const matrixInterval = setInterval(drawMatrix, 33);
 
-    // Kropka śledząca myszką
+    // Kropka śledząca myszkę
     const cursorDot = cursorDotRef.current;
     let mouseX = window.innerWidth / 2;
     let mouseY = window.innerHeight / 2;
@@ -86,7 +87,7 @@ export default function Home() {
     animateDot();
 
     // Powiększanie kropki na hover
-    const interactiveElements = document.querySelectorAll('button, input, select, label');
+    const interactiveElements = document.querySelectorAll('button, input, select, label, nav a');
     interactiveElements.forEach(el => {
       el.addEventListener('mouseenter', () => {
         if (cursorDot) {
@@ -100,7 +101,7 @@ export default function Home() {
       });
     });
 
-    // Ruch kontenerów na podstawie ruchu myszy
+    // Ruch kontenerów przy ruszaniu myszką
     const containers = document.querySelectorAll('.container, .converter-container, .currency-container');
     containers.forEach(container => {
       container.addEventListener('mousemove', (e) => {
@@ -150,7 +151,7 @@ export default function Home() {
           const sumaBokow = bok1 + bok2;
           const sumaStopni = kat1 + kat2 + kat3;
           let czyBokiOK = sumaBokow > podstawa;
-          let czyKatOk = sumaStopni === 180;
+          let czyKatOk = (sumaStopni === 180);
 
           if (czyBokiOK && czyKatOk) {
             resultElement.textContent = "Trójkąt istnieje!";
@@ -165,7 +166,7 @@ export default function Home() {
       });
     }
 
-    // Funkcje konwertera długości
+    // Konwerter długości
     function converterCm(liczba, jednostka) {
       if (jednostka === "decymetry") {
         return `Wynik wynosi: ${liczba / 10} dm`;
@@ -214,9 +215,9 @@ export default function Home() {
       }
     }
 
-    const converterForm = converterFormRef.current;
-    if (converterForm) {
-      converterForm.addEventListener('submit', function(event) {
+    const convForm = converterFormRef.current;
+    if (convForm) {
+      convForm.addEventListener('submit', function(event) {
         event.preventDefault();
         const liczba = parseFloat(document.getElementById("liczba").value);
         const jednostkaZ = document.getElementById("jednostkaZ").value;
@@ -253,18 +254,17 @@ export default function Home() {
       });
     }
 
-    // Funkcje konwertera walut
+    // Konwerter walut
     const exchangeRates = {
       "PLN": { "GR": 100, "USD": 0.25, "EUR": 0.23 },
       "GR": { "PLN": 0.01, "USD": 0.0025, "EUR": 0.0023 },
       "USD": { "PLN": 4, "GR": 400, "EUR": 0.92 },
       "EUR": { "PLN": 4.35, "GR": 435, "USD": 1.09 }
-      // Dodaj więcej walut i kursów w razie potrzeby
     };
 
-    const currencyForm = currencyFormRef.current;
-    if (currencyForm) {
-      currencyForm.addEventListener('submit', function(event) {
+    const currForm = currencyFormRef.current;
+    if (currForm) {
+      currForm.addEventListener('submit', function(event) {
         event.preventDefault();
         const kwota = parseFloat(document.getElementById("kwota").value);
         const walutaZ = document.getElementById("walutaZ").value;
@@ -296,16 +296,74 @@ export default function Home() {
       });
     }
 
+    // Obserwacja sekcji, aby podświetlić aktywny link
+    const sections = document.querySelectorAll('.section');
+    const options = {
+      threshold: 0.6
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          setActiveSection(entry.target.id);
+        }
+      });
+    }, options);
+
+    sections.forEach(section => {
+      observer.observe(section);
+    });
+
     return () => {
       clearInterval(matrixInterval);
       window.removeEventListener('resize', resizeCanvas);
     };
   }, []);
 
+  const scrollToSection = (id) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({behavior: "smooth"});
+    }
+  };
+
   return (
     <>
       <canvas id="matrix" ref={canvasRef}></canvas>
       <div id="cursor-dot" ref={cursorDotRef}></div>
+
+      {/* Nawigacja */}
+      <nav className="main-nav">
+        <ul>
+          <li>
+            <a 
+              href="#triangle-section" 
+              onClick={(e) => { e.preventDefault(); scrollToSection('triangle-section'); }}
+              className={activeSection === 'triangle-section' ? 'active' : ''}
+            >
+              Trójkąt
+            </a>
+          </li>
+          <li>
+            <a 
+              href="#converter-section"
+              onClick={(e) => { e.preventDefault(); scrollToSection('converter-section'); }}
+              className={activeSection === 'converter-section' ? 'active' : ''}
+            >
+              Konwerter Jednostek
+            </a>
+          </li>
+          <li>
+            <a 
+              href="#currency-section"
+              onClick={(e) => { e.preventDefault(); scrollToSection('currency-section'); }}
+              className={activeSection === 'currency-section' ? 'active' : ''}
+            >
+              Konwerter Walut
+            </a>
+          </li>
+        </ul>
+      </nav>
 
       {/* Sekcja 1: Trójkąt */}
       <div className="section" id="triangle-section">
@@ -413,7 +471,10 @@ export default function Home() {
       </div>
 
       <style jsx global>{`
-        /* Ogólne style */
+        html {
+          scroll-behavior: smooth;
+        }
+
         body {
           margin: 0;
           padding: 0;
@@ -423,7 +484,6 @@ export default function Home() {
           cursor: none;
         }
 
-        /* Canvas dla efektu Matrix */
         canvas {
           display: block;
           position: fixed;
@@ -434,7 +494,6 @@ export default function Home() {
           z-index: -1;
         }
 
-        /* Kropka śledząca myszkę */
         #cursor-dot {
           position: fixed;
           top: 0;
@@ -449,7 +508,6 @@ export default function Home() {
           z-index: 1000;
         }
 
-        /* Ogólne style dla sekcji */
         .section {
           position: relative;
           padding: 50px 20px;
@@ -460,7 +518,6 @@ export default function Home() {
           align-items: center;
         }
 
-        /* Style dla kontenerów */
         .container, .converter-container, .currency-container {
           background: rgba(0,0,0,0.8);
           border: 2px solid #0F0;
@@ -474,19 +531,6 @@ export default function Home() {
           perspective: 1000px;
         }
 
-        /* Animacja wejścia */
-        @keyframes slideIn {
-          from {
-            opacity: 0;
-            transform: translateY(50px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        /* Animacja dla tytułu */
         h1 {
           text-align: center;
           margin-bottom: 25px;
@@ -497,10 +541,8 @@ export default function Home() {
         }
 
         @keyframes fadeInSlide {
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+          0% { opacity:0; transform:translateY(20px); }
+          100% { opacity:1; transform:translateY(0); }
         }
 
         .input-group {
@@ -534,11 +576,10 @@ export default function Home() {
           background: #111;
         }
 
-        /* Styl dla select */
         select {
           -webkit-appearance: none;
           -moz-appearance: none;
-          background-image: url('data:image/svg+xml;charset=US-ASCII,<svg%20width%3D"16"%20height%3D"16"%20xmlns%3D"http://www.w3.org/2000/svg"><polygon%20points%3D"0,0%2016,0%208,8"%20style%3D"fill:%230F0;"/></svg>');
+          background-image: url('data:image/svg+xml,<svg fill="%230F0" height="16" width="16" xmlns="http://www.w3.org/2000/svg"><path d="M4 6l4 4 4-4z"/></svg>');
           background-repeat: no-repeat;
           background-position: right 10px center;
           background-size: 10px;
@@ -578,6 +619,54 @@ export default function Home() {
           color: #F00;
         }
 
+        /* Nawigacja */
+        .main-nav {
+          position: fixed;
+          top: 20px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: rgba(0,0,0,0.5);
+          border: 1px solid #0F0;
+          border-radius: 20px;
+          padding: 10px 20px;
+          z-index: 9999;
+          backdrop-filter: blur(5px);
+          animation: fadeInNav 1s forwards;
+          display: flex;
+        }
+
+        @keyframes fadeInNav {
+          0% { opacity:0; transform: translateX(-50%) translateY(-20px); }
+          100% { opacity:1; transform: translateX(-50%) translateY(0); }
+        }
+
+        .main-nav ul {
+          list-style: none;
+          margin: 0;
+          padding: 0;
+          display: flex;
+          gap: 20px;
+        }
+
+        .main-nav a {
+          color: #0F0;
+          text-decoration: none;
+          font-size: 16px;
+          position: relative;
+          padding: 5px 10px;
+          border-radius: 8px;
+          transition: background 0.3s, color 0.3s;
+        }
+
+        .main-nav a:hover {
+          background: rgba(0,255,0,0.2);
+        }
+
+        .main-nav a.active {
+          background: #0F0;
+          color: #000;
+        }
+
         /* Responsywność */
         @media (max-width: 768px) {
           .section {
@@ -601,6 +690,10 @@ export default function Home() {
 
           #result, #converterResult, #currencyResult {
             font-size: 18px;
+          }
+
+          .main-nav a {
+            font-size: 14px;
           }
         }
 
@@ -628,6 +721,13 @@ export default function Home() {
 
           #result, #converterResult, #currencyResult {
             font-size: 16px;
+          }
+
+          .main-nav {
+            top: 10px;
+          }
+          .main-nav a {
+            font-size: 12px;
           }
         }
       `}</style>
