@@ -60,7 +60,7 @@ export default function Home() {
 
     const matrixInterval = setInterval(drawMatrix, 33);
 
-    // Kropka śledząca myszkę
+    // Kropka śledząca myszką
     const cursorDot = cursorDotRef.current;
     let mouseX = window.innerWidth / 2;
     let mouseY = window.innerHeight / 2;
@@ -332,7 +332,7 @@ export default function Home() {
       <canvas id="matrix" ref={canvasRef}></canvas>
       <div id="cursor-dot" ref={cursorDotRef}></div>
 
-      {/* Nawigacja */}
+      {/* Nawigacja bez logo, bez hamburgera */}
       <nav className="main-nav">
         <ul>
           <li>
@@ -619,7 +619,7 @@ export default function Home() {
           color: #F00;
         }
 
-        /* Nawigacja */
+        /* Nawigacja - prosta i responsywna */
         .main-nav {
           position: fixed;
           top: 20px;
@@ -633,6 +633,10 @@ export default function Home() {
           backdrop-filter: blur(5px);
           animation: fadeInNav 1s forwards;
           display: flex;
+          justify-content: center;
+          align-items: center;
+          max-width: 80%;
+          flex-wrap: wrap; /* Pozwala na zawijanie linków */
         }
 
         @keyframes fadeInNav {
@@ -645,7 +649,13 @@ export default function Home() {
           margin: 0;
           padding: 0;
           display: flex;
+          flex-wrap: wrap;
           gap: 20px;
+          justify-content: center;
+        }
+
+        .main-nav li {
+          display: inline-block;
         }
 
         .main-nav a {
@@ -656,6 +666,7 @@ export default function Home() {
           padding: 5px 10px;
           border-radius: 8px;
           transition: background 0.3s, color 0.3s;
+          white-space: nowrap;
         }
 
         .main-nav a:hover {
@@ -667,46 +678,23 @@ export default function Home() {
           color: #000;
         }
 
-        /* Responsywność */
-        @media (max-width: 768px) {
-          .section {
-            padding: 30px 10px;
+        @media (max-width: 600px) {
+          .main-nav {
+            padding: 10px;
+            max-width: 95%;
+          }
+
+          .main-nav a {
+            font-size: 14px;
+            padding: 5px 8px;
+          }
+
+          .main-nav ul {
+            gap: 10px;
           }
 
           h1 {
             font-size: 20px;
-            margin-bottom: 20px;
-          }
-
-          input, select {
-            font-size: 14px;
-            padding: 10px 12px;
-          }
-
-          button {
-            font-size: 16px;
-            padding: 10px;
-          }
-
-          #result, #converterResult, #currencyResult {
-            font-size: 18px;
-          }
-
-          .main-nav a {
-            font-size: 14px;
-          }
-        }
-
-        @media (max-width: 500px) {
-          .container, .converter-container, .currency-container {
-            max-width: 90%;
-            margin: 15px;
-            padding: 25px 20px;
-          }
-
-          h1 {
-            font-size: 18px;
-            margin-bottom: 15px;
           }
 
           input, select {
@@ -722,14 +710,8 @@ export default function Home() {
           #result, #converterResult, #currencyResult {
             font-size: 16px;
           }
-
-          .main-nav {
-            top: 10px;
-          }
-          .main-nav a {
-            font-size: 12px;
-          }
         }
+
       `}</style>
     </>
   );
